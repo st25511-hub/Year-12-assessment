@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Book Tickets</h2>
+
+<div class="booking-card">
+
+    <h3>{{ event_name }}</h3>
+
+    <p>{{ event.description }}</p>
+
+    <p>
+        <strong>Price:</strong>
+        ${{ "%.2f"|format(event.price) }}
+    </p>
+
+    <p>
+        <strong>Tickets available:</strong>
+        {{ event.available }}
+    </p>
+
+    {% if error %}
+
+    <div class="error">
+        {{ error }}
+    </div>
+
+    {% endif %}
+
+    <form method="POST">
+
+        <label for="name">Full Name:</label>
+
+        <input
+            type="text"
+            id="name"
+            name="name"
+            required
+        >
+
+        <label for="email">Email:</label>
+
+        <input
+            type="email"
+            id="email"
+            name="email"
+            required
+        >
+
+        <label for="ticket_type">Ticket Type:</label>
+
+        <select id="ticket_type" name="ticket_type">
+
+            <option value="Student">
+                Student
+            </option>
+
+            <option value="Staff">
+                Staff
+            </option>
+
+        </select>
+
+        <label for="quantity">Number of Tickets:</label>
+
+        <input
+            type="number"
+            id="quantity"
+            name="quantity"
+            min="1"
+            max="{{ event.available }}"
+            required
+        >
+
+        <button type="submit">
+            Confirm Booking
+        </button>
+
+    </form>
+
+    <a href="{{ url_for('index') }}">
+        Back to Events
+    </a>
+
+</div>
+
+{% endblock %}
