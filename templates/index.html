@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Upcoming Events</h2>
+
+<div class="event-container">
+
+    {% for name, event in events.items() %}
+
+    <div class="event-card">
+
+        <h3>{{ name }}</h3>
+
+        <p><strong>Date:</strong> {{ event.date }}</p>
+
+        <p><strong>Ticket price:</strong>
+            ${{ "%.2f"|format(event.price) }}
+        </p>
+
+        <p><strong>Tickets available:</strong>
+            {{ event.available }}
+        </p>
+
+        <p>{{ event.description }}</p>
+
+        {% if event.available > 0 %}
+
+        <a class="button"
+           href="{{ url_for('book', event_name=name) }}">
+            Book Tickets
+        </a>
+
+        {% else %}
+
+        <p class="sold-out">SOLD OUT</p>
+
+        {% endif %}
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}
