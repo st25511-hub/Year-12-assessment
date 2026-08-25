@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="confirmation">
+
+    <h2>Booking Confirmed!</h2>
+
+    <p>Your booking has been successfully created.</p>
+
+    <div class="booking-details">
+
+        <p>
+            <strong>Booking Reference:</strong>
+            {{ booking.reference }}
+        </p>
+
+        <p>
+            <strong>Name:</strong>
+            {{ booking.name }}
+        </p>
+
+        <p>
+            <strong>Email:</strong>
+            {{ booking.email }}
+        </p>
+
+        <p>
+            <strong>Event:</strong>
+            {{ booking.event }}
+        </p>
+
+        <p>
+            <strong>Ticket Type:</strong>
+            {{ booking.ticket_type }}
+        </p>
+
+        <p>
+            <strong>Number of Tickets:</strong>
+            {{ booking.quantity }}
+        </p>
+
+        <p>
+            <strong>Total:</strong>
+            ${{ "%.2f"|format(booking.total) }}
+        </p>
+
+    </div>
+
+    <a class="button" href="{{ url_for('index') }}">
+        Back to Events
+    </a>
+
+</div>
+
+{% endblock %}
