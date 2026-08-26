@@ -2,55 +2,82 @@
 
 {% block content %}
 
-<div class="confirmation">
+<section class="confirmation-section">
 
-    <h2>Booking Confirmed!</h2>
+    <div class="confirmation">
 
-    <p>Your booking has been successfully created.</p>
+        <div class="success-icon">
+            ✓
+        </div>
 
-    <div class="booking-details">
+        <p class="eyebrow">BOOKING COMPLETE</p>
 
-        <p>
-            <strong>Booking Reference:</strong>
-            {{ booking.reference }}
-        </p>
-
-        <p>
-            <strong>Name:</strong>
-            {{ booking.name }}
-        </p>
+        <h2>You're all booked!</h2>
 
         <p>
-            <strong>Email:</strong>
-            {{ booking.email }}
+            Your tickets have been successfully reserved.
         </p>
 
-        <p>
-            <strong>Event:</strong>
-            {{ booking.event }}
-        </p>
 
-        <p>
-            <strong>Ticket Type:</strong>
-            {{ booking.ticket_type }}
-        </p>
+        <div class="reference">
 
-        <p>
-            <strong>Number of Tickets:</strong>
-            {{ booking.quantity }}
-        </p>
+            <span>BOOKING REFERENCE</span>
 
-        <p>
-            <strong>Total:</strong>
-            ${{ "%.2f"|format(booking.total) }}
-        </p>
+            <strong>
+                {{ booking.reference }}
+            </strong>
+
+        </div>
+
+
+        <div class="booking-details">
+
+            <div>
+                <span>Event</span>
+                <strong>{{ booking.event }}</strong>
+            </div>
+
+            <div>
+                <span>Name</span>
+                <strong>{{ booking.name }}</strong>
+            </div>
+
+            <div>
+                <span>Ticket Type</span>
+                <strong>{{ booking.ticket_type }}</strong>
+            </div>
+
+            <div>
+                <span>Quantity</span>
+                <strong>{{ booking.quantity }}</strong>
+            </div>
+
+            <div>
+                <span>Price per ticket</span>
+                <strong>
+                    ${{ "%.2f"|format(booking.ticket_price) }}
+                </strong>
+            </div>
+
+            <div class="total-row">
+                <span>Total</span>
+                <strong>
+                    ${{ "%.2f"|format(booking.total) }}
+                </strong>
+            </div>
+
+        </div>
+
+
+        <a
+            class="button"
+            href="{{ url_for('index') }}"
+        >
+            Back to Events
+        </a>
 
     </div>
 
-    <a class="button" href="{{ url_for('index') }}">
-        Back to Events
-    </a>
-
-</div>
+</section>
 
 {% endblock %}
