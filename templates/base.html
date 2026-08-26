@@ -1,27 +1,60 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School Event Ticketing</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>School Events | Ticketing</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
 </head>
 
 <body>
 
-<header>
-    <h1>School Event Ticketing</h1>
-    <p>Book your tickets for upcoming school events</p>
-</header>
+<nav>
+
+    <div class="logo">
+        EVENT<span>HUB</span>
+    </div>
+
+    <a href="{{ url_for('index') }}">
+        Home
+    </a>
+
+</nav>
+
 
 <main>
+
     {% block content %}
     {% endblock %}
+
 </main>
 
+
 <footer>
-    <p>Student Event Management System</p>
+
+    <div class="footer-logo">
+        EVENTHUB
+    </div>
+
+    <p>
+        School Event Ticketing System
+    </p>
+
 </footer>
 
 </body>
+
 </html>
