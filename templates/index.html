@@ -2,45 +2,101 @@
 
 {% block content %}
 
-<h2>Upcoming Events</h2>
+<section class="hero">
 
-<div class="event-container">
+    <div class="hero-text">
+        <p class="eyebrow">SCHOOL EVENTS 2026</p>
 
-    {% for name, event in events.items() %}
+        <h2>
+            Make memories.<br>
+            Book your event.
+        </h2>
 
-    <div class="event-card">
-
-        <h3>{{ name }}</h3>
-
-        <p><strong>Date:</strong> {{ event.date }}</p>
-
-        <p><strong>Ticket price:</strong>
-            ${{ "%.2f"|format(event.price) }}
+        <p>
+            Discover upcoming school events and secure
+            your tickets before they sell out.
         </p>
 
-        <p><strong>Tickets available:</strong>
-            {{ event.available }}
-        </p>
-
-        <p>{{ event.description }}</p>
-
-        {% if event.available > 0 %}
-
-        <a class="button"
-           href="{{ url_for('book', event_name=name) }}">
-            Book Tickets
+        <a href="#events" class="hero-button">
+            Explore Events
         </a>
+    </div>
 
-        {% else %}
+    <div class="hero-icon">
+        🎟️
+    </div>
 
-        <p class="sold-out">SOLD OUT</p>
+</section>
 
-        {% endif %}
+
+<section id="events" class="events-section">
+
+    <div class="section-heading">
+        <p class="eyebrow">WHAT'S ON</p>
+        <h2>Upcoming Events</h2>
+        <p>Choose an event and book your tickets.</p>
+    </div>
+
+
+    <div class="event-container">
+
+        {% for name, event in events.items() %}
+
+        <div class="event-card">
+
+            <div class="event-icon">
+                {{ event.icon }}
+            </div>
+
+            <div class="event-content">
+
+                <p class="event-date">
+                    {{ event.date }}
+                </p>
+
+                <h3>{{ name }}</h3>
+
+                <p class="event-description">
+                    {{ event.description }}
+                </p>
+
+                <div class="event-info">
+
+                    <span>
+                        🎟️ {{ event.available }} tickets
+                    </span>
+
+                    <span>
+                        From ${{ "%.2f"|format(event.price) }}
+                    </span>
+
+                </div>
+
+                {% if event.available > 0 %}
+
+                <a
+                    class="button"
+                    href="{{ url_for('book', event_name=name) }}"
+                >
+                    Book Tickets →
+                </a>
+
+                {% else %}
+
+                <p class="sold-out">
+                    SOLD OUT
+                </p>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        {% endfor %}
 
     </div>
 
-    {% endfor %}
-
-</div>
+</section>
 
 {% endblock %}
