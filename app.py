@@ -1,12 +1,18 @@
 from flask import Flask, render_template, request
 import json
-import os
 import random
 import string
 
 app = Flask(__name__)
 
 DATA_FILE = "data/events.json"
+
+TICKET_PRICES = {
+    "Student": 0.85,
+    "Staff": 1.00,
+    "Adult": 1.25,
+    "Child": 0.65
+}
 
 
 def load_events():
@@ -21,9 +27,15 @@ def save_events(events):
         json.dump(events, file, indent=4)
 
 
-def calculate_total(price, quantity):
+def calculate_total(price, quantity, ticket_type):
     """Calculate the total cost of a booking."""
-    return price * quantity
+    final_price = price * TICKET_PRICES[ticket_type]
+    return final_price * quantity
+
+
+def get_ticket_price(price, ticket_type):
+    """Calculate the price of one ticket."""
+    return price * TICKET_PRICES[ticket_type]
 
 
 def generate_reference():
@@ -76,6 +88,15 @@ def book(event_name):
                 error=error
             )
 
+        if ticket_type not in TICKET_PRICES:
+            error = "Please select a valid ticket type."
+            return render_template(
+                "booking.html",
+                event=event,
+                event_name=event_name,
+                error=error
+            )
+
         try:
             quantity = int(quantity_text)
         except ValueError:
@@ -100,7 +121,16 @@ def book(event_name):
                 error=error
             )
 
-        total = calculate_total(event["price"], quantity)
+        ticket_price = get_ticket_price(
+            event["price"],
+            ticket_type
+        )
+
+        total = calculate_total(
+            event["price"],
+            quantity,
+            ticket_type
+        )
 
         event["available"] -= quantity
         save_events(events)
@@ -114,6 +144,7 @@ def book(event_name):
             "event": event_name,
             "ticket_type": ticket_type,
             "quantity": quantity,
+            "ticket_price": ticket_price,
             "total": total
         }
 
@@ -125,7 +156,8 @@ def book(event_name):
     return render_template(
         "booking.html",
         event=event,
-        event_name=event_name
+        event_name=event_name,
+        ticket_prices=TICKET_PRICES
     )
 
 
