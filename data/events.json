@@ -1,21 +1,21 @@
 {
     "Cultural Night": {
         "date": "15 September 2026",
-        "price": 12.00,
+        "price": 12.0,
         "capacity": 120,
-        "available": 120,
+        "available": 118,
         "description": "An evening celebrating different cultures through performances, food and music."
     },
     "Talent Show": {
         "date": "22 September 2026",
-        "price": 10.00,
+        "price": 10.0,
         "capacity": 100,
         "available": 100,
         "description": "Watch students perform music, dance, comedy and other talents."
     },
     "Charity Sports Day": {
         "date": "30 September 2026",
-        "price": 8.00,
+        "price": 8.0,
         "capacity": 200,
         "available": 200,
         "description": "A fun sports event raising money for a school charity."
