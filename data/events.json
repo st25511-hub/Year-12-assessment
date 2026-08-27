@@ -1,42 +1,42 @@
 {
     "Cultural Night": {
         "date": "15 September 2026",
-        "price": 12.00,
+        "price": 12.0,
         "capacity": 120,
-        "available": 120,
-        "icon": "🌏",
+        "available": 118,
+        "icon": "\ud83c\udf0f",
         "description": "Celebrate different cultures through performances, food and music."
     },
     "Talent Show": {
         "date": "22 September 2026",
-        "price": 10.00,
+        "price": 10.0,
         "capacity": 100,
         "available": 100,
-        "icon": "🎤",
+        "icon": "\ud83c\udfa4",
         "description": "Watch students perform music, dance, comedy and other talents."
     },
     "Charity Sports Day": {
         "date": "30 September 2026",
-        "price": 8.00,
+        "price": 8.0,
         "capacity": 200,
         "available": 200,
-        "icon": "🏆",
+        "icon": "\ud83c\udfc6",
         "description": "A fun sports event raising money for a school charity."
     },
     "Spring Concert": {
         "date": "7 October 2026",
-        "price": 15.00,
+        "price": 15.0,
         "capacity": 150,
         "available": 150,
-        "icon": "🎶",
+        "icon": "\ud83c\udfb6",
         "description": "Enjoy an evening of live music and performances from talented students."
     },
     "School Arts Festival": {
         "date": "14 October 2026",
-        "price": 10.00,
+        "price": 10.0,
         "capacity": 180,
         "available": 180,
-        "icon": "🎨",
+        "icon": "\ud83c\udfa8",
         "description": "Explore student artwork, performances and creative projects."
     }
 }
