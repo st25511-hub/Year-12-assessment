@@ -11,7 +11,7 @@
         "date": "22 September 2026",
         "price": 10.0,
         "capacity": 100,
-        "available": 100,
+        "available": 98,
         "icon": "\ud83c\udfa4",
         "description": "Watch students perform music, dance, comedy and other talents."
     },
@@ -27,7 +27,7 @@
         "date": "7 October 2026",
         "price": 15.0,
         "capacity": 150,
-        "available": 150,
+        "available": 149,
         "icon": "\ud83c\udfb6",
         "description": "Enjoy an evening of live music and performances from talented students."
     },
@@ -35,7 +35,7 @@
         "date": "14 October 2026",
         "price": 10.0,
         "capacity": 180,
-        "available": 180,
+        "available": 170,
         "icon": "\ud83c\udfa8",
         "description": "Explore student artwork, performances and creative projects."
     }
