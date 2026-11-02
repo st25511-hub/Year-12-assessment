@@ -42,9 +42,24 @@ def get_ticket_price(price, ticket_type):
 
 def generate_reference():
     """Generate a unique booking reference."""
+
     characters = string.ascii_uppercase + string.digits
-    code = "".join(random.choices(characters, k=6))
-    return f"EVT-{code}"
+
+    while True:
+        code = "".join(random.choices(characters, k=6))
+        reference = f"EVT-{code}"
+
+        connection = sqlite3.connect(DATABASE_FILE)
+
+        existing = connection.execute(
+            "SELECT 1 FROM bookings WHERE reference = ?",
+            (reference,)
+        ).fetchone()
+
+        connection.close()
+
+        if existing is None:
+            return reference
 
 
 def validate_quantity(quantity, available):
