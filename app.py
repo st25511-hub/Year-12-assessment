@@ -2,10 +2,12 @@ from flask import Flask, render_template, request
 import json
 import random
 import string
+import sqlite3
 
 app = Flask(__name__)
 
 DATA_FILE = "data/events.json"
+DATABASE_FILE = "data/bookings.db"
 
 TICKET_PRICES = {
     "Student": 0.85,
@@ -54,6 +56,61 @@ def validate_quantity(quantity, available):
         return False, f"Only {available} tickets are available."
 
     return True, ""
+
+def initialise_database():
+    """Create the bookings database if it does not exist."""
+
+    connection = sqlite3.connect(DATABASE_FILE)
+
+    connection.execute("""
+        CREATE TABLE IF NOT EXISTS bookings (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            reference TEXT UNIQUE NOT NULL,
+            name TEXT NOT NULL,
+            email TEXT NOT NULL,
+            event TEXT NOT NULL,
+            ticket_type TEXT NOT NULL,
+            quantity INTEGER NOT NULL,
+            ticket_price REAL NOT NULL,
+            total REAL NOT NULL,
+            booking_date TEXT DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+
+    connection.commit()
+    connection.close()
+
+
+def save_booking(booking):
+    """Save customer booking information into the database."""
+
+    connection = sqlite3.connect(DATABASE_FILE)
+
+    connection.execute("""
+        INSERT INTO bookings (
+            reference,
+            name,
+            email,
+            event,
+            ticket_type,
+            quantity,
+            ticket_price,
+            total
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    """, (
+        booking["reference"],
+        booking["name"],
+        booking["email"],
+        booking["event"],
+        booking["ticket_type"],
+        booking["quantity"],
+        booking["ticket_price"],
+        booking["total"]
+    ))
+
+    connection.commit()
+    connection.close()
 
 
 @app.route("/")
@@ -148,6 +205,8 @@ def book(event_name):
             "total": total
         }
 
+        save_booking(booking)
+
         return render_template(
             "confirmation.html",
             booking=booking
@@ -160,6 +219,7 @@ def book(event_name):
         ticket_prices=TICKET_PRICES
     )
 
+initialise_database()
 
 if __name__ == "__main__":
     app.run(debug=True)
