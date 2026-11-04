@@ -72,6 +72,7 @@ def validate_quantity(quantity, available):
 
     return True, ""
 
+
 def initialise_database():
     """Create the bookings database if it does not exist."""
 
@@ -88,9 +89,22 @@ def initialise_database():
             quantity INTEGER NOT NULL,
             ticket_price REAL NOT NULL,
             total REAL NOT NULL,
-            booking_date TEXT DEFAULT CURRENT_TIMESTAMP
+            booking_date TEXT DEFAULT CURRENT_TIMESTAMP,
+            cancelled INTEGER NOT NULL DEFAULT 0
         )
     """)
+
+    columns = [
+        row[1] for row in connection.execute(
+            "PRAGMA table_info(bookings)"
+        ).fetchall()
+    ]
+
+    if "cancelled" not in columns:
+        connection.execute("""
+            ALTER TABLE bookings
+            ADD COLUMN cancelled INTEGER NOT NULL DEFAULT 0
+        """)
 
     connection.commit()
     connection.close()
@@ -233,6 +247,73 @@ def book(event_name):
         event_name=event_name,
         ticket_prices=TICKET_PRICES
     )
+
+
+@app.route("/cancel", methods=["GET", "POST"])
+def cancel_booking():
+    """Find and cancel an existing booking."""
+
+    if request.method == "POST":
+        reference = request.form.get("reference", "").strip().upper()
+        email = request.form.get("email", "").strip()
+
+        connection = sqlite3.connect(DATABASE_FILE)
+        connection.row_factory = sqlite3.Row
+
+        booking = connection.execute("""
+            SELECT * FROM bookings
+            WHERE reference = ? AND email = ?
+        """, (reference, email)).fetchone()
+
+        if booking is None:
+            connection.close()
+            return render_template(
+                "cancel.html",
+                error="No booking was found with those details."
+            )
+
+        if booking["cancelled"] == 1:
+            connection.close()
+            return render_template(
+                "cancel.html",
+                error="This booking has already been cancelled."
+            )
+
+        events = load_events()
+        event_name = booking["event"]
+
+        if event_name not in events:
+            connection.close()
+            return render_template(
+                "cancel.html",
+                error="The event could not be found."
+            )
+
+        cursor = connection.execute("""
+            UPDATE bookings
+            SET cancelled = 1
+            WHERE reference = ? AND cancelled = 0
+        """, (reference,))
+
+        if cursor.rowcount != 1:
+            connection.close()
+            return render_template(
+                "cancel.html",
+                error="This booking has already been cancelled."
+            )
+
+        connection.commit()
+        connection.close()
+
+        events[event_name]["available"] += booking["quantity"]
+        save_events(events)
+
+        return render_template(
+            "cancellation_confirmation.html",
+            booking=booking
+        )
+
+    return render_template("cancel.html")
 
 initialise_database()
 

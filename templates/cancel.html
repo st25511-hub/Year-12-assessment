@@ -1,0 +1,46 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="section-heading">
+    <p class="eyebrow">EVENTHUB</p>
+    <h2>Cancel a Booking</h2>
+    <p>Enter your booking reference and email address.</p>
+</section>
+
+<section class="booking-section">
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <form method="POST">
+
+        <label for="reference">Booking Reference</label>
+        <input
+            type="text"
+            id="reference"
+            name="reference"
+            placeholder="Example: EVT-A1B2C3"
+            required
+        >
+
+        <label for="email">Email Address</label>
+        <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Enter your email"
+            required
+        >
+
+        <button type="submit" class="button">
+            Cancel Booking
+        </button>
+
+    </form>
+
+</section>
+
+{% endblock %}

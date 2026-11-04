@@ -1,0 +1,32 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="section-heading">
+    <p class="eyebrow">EVENTHUB</p>
+    <h2>Booking Cancelled</h2>
+    <p>Your booking has been successfully cancelled.</p>
+</section>
+
+<section class="booking-section">
+
+    <h3>Cancellation Summary</h3>
+
+    <p><strong>Reference:</strong> {{ booking.reference }}</p>
+    <p><strong>Name:</strong> {{ booking.name }}</p>
+    <p><strong>Event:</strong> {{ booking.event }}</p>
+    <p><strong>Tickets cancelled:</strong> {{ booking.quantity }}</p>
+
+    <p>
+        <strong>Total booking value:</strong>
+        ${{ "%.2f"|format(booking.total) }}
+    </p>
+
+    <a href="{{ url_for('index') }}" class="button">
+        Return Home
+    </a>
+
+</section>
+
+{% endblock %}
