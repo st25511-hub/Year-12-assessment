@@ -1,0 +1,76 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="admin-section">
+
+    <h2>Admin Dashboard</h2>
+    <p>View and manage saved EventHub bookings.</p>
+
+    <h3>Total Bookings: {{ bookings|length }}</h3>
+
+    {% if bookings %}
+
+    <div class="booking-details">
+
+        {% for booking in bookings %}
+
+        <div class="admin-booking">
+
+            <h3>{{ booking.reference }}</h3>
+
+            <p><strong>Customer:</strong> {{ booking.name }}</p>
+            <p><strong>Email:</strong> {{ booking.email }}</p>
+            <p><strong>Event:</strong> {{ booking.event }}</p>
+            <p><strong>Ticket Type:</strong> {{ booking.ticket_type }}</p>
+            <p><strong>Quantity:</strong> {{ booking.quantity }}</p>
+
+            <p>
+                <strong>Subtotal:</strong>
+                ${{ "%.2f"|format(booking.subtotal) }}
+            </p>
+
+            <p>
+                <strong>Discount:</strong>
+                ${{ "%.2f"|format(booking.discount) }}
+            </p>
+
+            <p>
+                <strong>Merchandise:</strong>
+                ${{ "%.2f"|format(booking.addon_cost) }}
+            </p>
+
+            <p>
+                <strong>Final Total:</strong>
+                ${{ "%.2f"|format(booking.total) }}
+            </p>
+
+            <p>
+                <strong>Status:</strong>
+                {% if booking.cancelled %}
+                    Cancelled
+                {% else %}
+                    Active
+                {% endif %}
+            </p>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+        <p>No bookings have been made yet.</p>
+
+    {% endif %}
+
+    <a class="button" href="{{ url_for('index') }}">
+        Back to Events
+    </a>
+
+</section>
+
+{% endblock %}

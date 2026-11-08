@@ -384,6 +384,26 @@ def cancel_booking():
 
     return render_template("cancel.html")
 
+@app.route("/admin")
+def admin():
+    """Display all saved bookings for the admin."""
+
+    connection = sqlite3.connect(DATABASE_FILE)
+    connection.row_factory = sqlite3.Row
+
+    bookings = connection.execute("""
+        SELECT *
+        FROM bookings
+        ORDER BY booking_date DESC
+    """).fetchall()
+
+    connection.close()
+
+    return render_template(
+        "admin.html",
+        bookings=bookings
+    )
+
 initialise_database()
 
 if __name__ == "__main__":
