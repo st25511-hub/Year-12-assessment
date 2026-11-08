@@ -90,15 +90,20 @@ def initialise_database():
             ticket_price REAL NOT NULL,
             total REAL NOT NULL,
             booking_date TEXT DEFAULT CURRENT_TIMESTAMP,
-            cancelled INTEGER NOT NULL DEFAULT 0
+            cancelled INTEGER NOT NULL DEFAULT 0,
+            subtotal REAL NOT NULL DEFAULT 0,
+            discount_code TEXT NOT NULL DEFAULT '',
+            discount REAL NOT NULL DEFAULT 0,
+            merchandise_addon INTEGER NOT NULL DEFAULT 0,
+            addon_cost REAL NOT NULL DEFAULT 0
         )
     """)
 
     columns = [
-        row[1] for row in connection.execute(
-            "PRAGMA table_info(bookings)"
-        ).fetchall()
-    ]
+    row[1] for row in connection.execute(
+        "PRAGMA table_info(bookings)"
+    ).fetchall()
+]
 
     if "cancelled" not in columns:
         connection.execute("""
@@ -106,27 +111,52 @@ def initialise_database():
             ADD COLUMN cancelled INTEGER NOT NULL DEFAULT 0
         """)
 
+    columns = [
+    column[1] for column in connection.execute(
+        "PRAGMA table_info(bookings)"
+    ).fetchall()
+]
+
+    if "subtotal" not in columns:
+           connection.execute(
+                "ALTER TABLE bookings ADD COLUMN subtotal REAL NOT NULL DEFAULT 0"
+            )
+
+    if "discount_code" not in columns:
+            connection.execute(
+                "ALTER TABLE bookings ADD COLUMN discount_code TEXT NOT NULL DEFAULT ''"
+            )
+
+    if "discount" not in columns:
+            connection.execute(
+                "ALTER TABLE bookings ADD COLUMN discount REAL NOT NULL DEFAULT 0"
+            )
+
+    if "merchandise_addon" not in columns:
+            connection.execute(
+                "ALTER TABLE bookings ADD COLUMN merchandise_addon INTEGER NOT NULL DEFAULT 0"
+            )
+
+    if "addon_cost" not in columns:
+            connection.execute(
+                "ALTER TABLE bookings ADD COLUMN addon_cost REAL NOT NULL DEFAULT 0"
+            )
+
     connection.commit()
     connection.close()
 
 
 def save_booking(booking):
-    """Save customer booking information into the database."""
+    conn = sqlite3.connect(DATABASE_FILE)
+    cursor = conn.cursor()
 
-    connection = sqlite3.connect(DATABASE_FILE)
-
-    connection.execute("""
+    cursor.execute("""
         INSERT INTO bookings (
-            reference,
-            name,
-            email,
-            event,
-            ticket_type,
-            quantity,
-            ticket_price,
-            total
+            reference, name, email, event, ticket_type,
+            quantity, ticket_price, total, subtotal,
+            discount_code, discount, merchandise_addon, addon_cost
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         booking["reference"],
         booking["name"],
@@ -135,11 +165,16 @@ def save_booking(booking):
         booking["ticket_type"],
         booking["quantity"],
         booking["ticket_price"],
-        booking["total"]
+        booking["total"],
+        booking["subtotal"],
+        booking["discount_code"],
+        booking["discount"],
+        booking["merchandise_addon"],
+        booking["addon_cost"]
     ))
 
-    connection.commit()
-    connection.close()
+    conn.commit()
+    conn.close()
 
 
 @app.route("/")
@@ -207,15 +242,44 @@ def book(event_name):
                 error=error
             )
 
+               # Calculate ticket price
         ticket_price = get_ticket_price(
             event["price"],
             ticket_type
         )
 
-        total = calculate_total(
-            event["price"],
-            quantity,
-            ticket_type
+        # Calculate subtotal
+        subtotal = round(
+            calculate_total(
+                event["price"],
+                quantity,
+                ticket_type
+            ), 2
+        )
+
+        # Check discount code
+        discount_code = request.form.get(
+            "discount_code", ""
+        ).strip().upper()
+
+        if discount_code == "EVENT10":
+            discount = round(subtotal * 0.10, 2)
+        else:
+            discount = 0.00
+
+        # Check merchandise selection
+        merchandise_addon = (
+            1 if request.form.get("merchandise") == "yes" else 0
+        )
+
+        if merchandise_addon == 1:
+            addon_cost = 5.00
+        else:
+            addon_cost = 0.00
+
+        # Calculate final total
+        total = round(
+            subtotal - discount + addon_cost, 2
         )
 
         event["available"] -= quantity
@@ -231,6 +295,11 @@ def book(event_name):
             "ticket_type": ticket_type,
             "quantity": quantity,
             "ticket_price": ticket_price,
+            "subtotal": subtotal,
+            "discount_code": discount_code,
+            "discount": discount,
+            "merchandise_addon": merchandise_addon,
+            "addon_cost": addon_cost,
             "total": total
         }
 

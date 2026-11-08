@@ -1,3 +1,4 @@
+
 {% extends "base.html" %}
 
 {% block content %}
@@ -18,7 +19,6 @@
             Your tickets have been successfully reserved.
         </p>
 
-
         <div class="reference">
 
             <span>BOOKING REFERENCE</span>
@@ -28,7 +28,6 @@
             </strong>
 
         </div>
-
 
         <div class="booking-details">
 
@@ -64,15 +63,48 @@
                 </strong>
             </div>
 
+            <div>
+                <span>Ticket Subtotal</span>
+                <strong>
+                    ${{ "%.2f"|format(booking.subtotal) }}
+                </strong>
+            </div>
+
+            {% if booking.discount_code == "EVENT10" %}
+            <div>
+                <span>Discount (EVENT10)</span>
+                <strong>
+                    -${{ "%.2f"|format(booking.discount) }}
+                </strong>
+            </div>
+            {% elif booking.discount_code %}
+            <div>
+                <span>Discount Code</span>
+                <strong>
+                    {{ booking.discount_code }} (Invalid)
+                </strong>
+            </div>
+            {% endif %}
+
+            <div>
+                <span>EventHub Merchandise</span>
+                {% if booking.merchandise_addon %}
+                    <strong>
+                        ${{ "%.2f"|format(booking.addon_cost) }}
+                    </strong>
+                {% else %}
+                    <strong>Not selected</strong>
+                {% endif %}
+            </div>
+
             <div class="total-row">
-                <span>Total</span>
+                <span>Final Total</span>
                 <strong>
                     ${{ "%.2f"|format(booking.total) }}
                 </strong>
             </div>
 
         </div>
-
 
         <a
             class="button"
